@@ -1,0 +1,29 @@
+/* unfoldingWord-specific changes */
+
+.home {
+	font-size: 16px;
+}
+
+@door43-logo-size: 20px;
+
+#door43-logo {
+	height: @door43-logo-size !important;
+	width: @door43-logo-size !important;
+	margin-top: -0.5* @door43-logo-size !important;
+	margin-bottom: -0.5 * @door43-logo-size !important;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.empty-icon {
+	width: 0px !important;
+	margin: 0 0 0 0 !important;
+	&:before {
+		content: "\200b"; // zero-width space
+	}
+}
+
+.repo-button-separator {
+	display: inline-flex;
+	width: 5px;
+}

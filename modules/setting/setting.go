@@ -545,9 +545,14 @@ var (
 	IterateBufferSize int
 
 	ExternalMarkupParsers []MarkupParser
+
 	// UILocation is the location on the UI, so that we can display the time on UI.
 	// Currently only show the default time.Local, it could be added to app.ini after UI is ready
 	UILocation = time.Local
+
+	Google struct {
+		GATrackingID string
+	}
 )
 
 // DateLang transforms standard language locale name to corresponding value in datetime plugin.
@@ -1109,6 +1114,8 @@ func NewContext() {
 	ShowFooterTemplateLoadTime = Cfg.Section("other").Key("SHOW_FOOTER_TEMPLATE_LOAD_TIME").MustBool(true)
 
 	UI.ShowUserEmail = Cfg.Section("ui").Key("SHOW_USER_EMAIL").MustBool(true)
+
+	Google.GATrackingID = Cfg.Section("other").Key("GA_TRACKING_ID").String()
 
 	HasRobotsTxt = com.IsFile(path.Join(CustomPath, "robots.txt"))
 

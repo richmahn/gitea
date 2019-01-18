@@ -1210,7 +1210,7 @@ func prepareRepoCommit(repo *Repository, tmpDir, repoPath string, opts CreateRep
 			return fmt.Errorf("getRepoInitFile[%s]: %v", opts.License, err)
 		}
 
-		if err = ioutil.WriteFile(filepath.Join(tmpDir, "LICENSE"), data, 0644); err != nil {
+		if err = ioutil.WriteFile(filepath.Join(tmpDir, "LICENSE.md"), data, 0644); err != nil {
 			return fmt.Errorf("write LICENSE: %v", err)
 		}
 	}
@@ -1356,6 +1356,29 @@ func createRepository(e *xorm.Session, doer, u *User, repo *Repository) (err err
 		return fmt.Errorf("watchRepo: %v", err)
 	} else if err = newRepoAction(e, u, repo); err != nil {
 		return fmt.Errorf("newRepoAction: %v", err)
+	}
+
+	w := &Webhook{
+		RepoID:      repo.ID,
+		URL:         "https://api.door43.org/client/webhook",
+		ContentType: ContentTypeJSON,
+		Secret:      "",
+		HookEvent: &HookEvent{
+			PushOnly:       true,
+			SendEverything: true,
+			ChooseEvents:   false,
+			HookEvents: HookEvents{
+				Create:      false,
+				Push:        false,
+				PullRequest: false,
+			},
+		},
+		IsActive:     true,
+		HookTaskType: GITEA,
+		OrgID:        0,
+	}
+	if err := w.UpdateEvent(); err == nil {
+		CreateWebhook(w)
 	}
 
 	return nil
