@@ -141,6 +141,9 @@ func NewFuncMap() []template.FuncMap {
 			}
 			return "tab-size-8"
 		},
+		"GATrackingID": func() string {
+			return setting.Google.GATrackingID
+		},
 		"SubJumpablePath": func(str string) []string {
 			var path []string
 			index := strings.LastIndex(str, "/")
@@ -151,6 +154,9 @@ func NewFuncMap() []template.FuncMap {
 				path = append(path, str)
 			}
 			return path
+		},
+		"ThisYear": func() string {
+			return time.Now().Format("2006")
 		},
 		"JsonPrettyPrint": func(in string) string {
 			var out bytes.Buffer

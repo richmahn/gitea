@@ -94,7 +94,7 @@ func (ctx *Context) RenderWithErr(msg string, tpl base.TplName, form interface{}
 // NotFound displays a 404 (Not Found) page and prints the given error, if any.
 func (ctx *Context) NotFound(title string, err error) {
 	if err != nil {
-		log.Error(4, "%s: %v", title, err)
+		log.Error(4, "(%s %s) %s: %v", ctx.Req.Method, ctx.Req.URL.String(), title, err)
 		if macaron.Env != macaron.PROD {
 			ctx.Data["ErrorMsg"] = err
 		}

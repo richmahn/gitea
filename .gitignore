@@ -9,6 +9,7 @@ _test
 
 # IntelliJ
 .idea
+*.iml
 
 # MS VSCode
 .vscode

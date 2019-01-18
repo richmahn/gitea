@@ -1,13 +1,10 @@
-[简体中文](https://github.com/go-gitea/gitea/blob/master/README_ZH.md)
+# Gitea - Git with a cup of tea - DCS Version
 
-# Gitea - Git with a cup of tea
-
-[![Build Status](https://drone.gitea.io/api/badges/go-gitea/gitea/status.svg)](https://drone.gitea.io/go-gitea/gitea)
-[![Join the Discord chat at https://discord.gg/NsatcWJ](https://img.shields.io/discord/322538954119184384.svg)](https://discord.gg/NsatcWJ)
-[![Join the Matrix chat at https://matrix.to/#/#gitea:matrix.org](https://img.shields.io/badge/matrix-%23gitea%3Amatrix.org-7bc9a4.svg)](https://matrix.to/#/#gitea:matrix.org)
+[![Build Status](https://travis-ci.org/unfoldingWord-dev/gogs.svg?branch=master)](https://travis-ci.org/unfoldingWord-dev/gogs)
+[![Join the chat at https://gitter.im/go-gitea/gitea](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/go-gitea/gitea?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![](https://images.microbadger.com/badges/image/gitea/gitea.svg)](https://microbadger.com/images/gitea/gitea "Get your own image badge on microbadger.com")
-[![codecov](https://codecov.io/gh/go-gitea/gitea/branch/master/graph/badge.svg)](https://codecov.io/gh/go-gitea/gitea)
-[![Go Report Card](https://goreportcard.com/badge/code.gitea.io/gitea)](https://goreportcard.com/report/code.gitea.io/gitea)
+[![Coverage Status](https://coveralls.io/repos/github/unfoldingWord-dev/gogs/badge.svg?branch=develop)](https://coveralls.io/github/unfoldingWord-dev/gogs?branch=develop)
+[![Go Report Card](https://goreportcard.com/badge/github.com/unfoldingWord-dev)](https://goreportcard.com/report/github.com/unfoldingWord-dev/gogs)
 [![GoDoc](https://godoc.org/code.gitea.io/gitea?status.svg)](https://godoc.org/code.gitea.io/gitea)
 [![Release](https://github-release-version.herokuapp.com/github/go-gitea/gitea/release.svg?style=flat)](https://github.com/go-gitea/gitea/releases/latest)
 [![Help Contribute to Open Source](https://www.codetriage.com/go-gitea/gitea/badges/users.svg)](https://www.codetriage.com/go-gitea/gitea)

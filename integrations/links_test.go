@@ -21,12 +21,6 @@ func TestLinksNoLogin(t *testing.T) {
 	prepareTestEnv(t)
 
 	var links = []string{
-		"/explore/repos",
-		"/explore/repos?q=test&tab=",
-		"/explore/users",
-		"/explore/users?q=test&tab=",
-		"/explore/organizations",
-		"/explore/organizations?q=test&tab=",
 		"/",
 		"/user/sign_up",
 		"/user/login",
@@ -40,6 +34,25 @@ func TestLinksNoLogin(t *testing.T) {
 	for _, link := range links {
 		req := NewRequest(t, "GET", link)
 		MakeRequest(t, req, http.StatusOK)
+	}
+}
+
+func TestLinksRequireLogin(t *testing.T) {
+	prepareTestEnv(t)
+
+	var links = []string{
+		"/explore/repos",
+		"/explore/repos?q=test&tab=",
+		"/explore/users",
+		"/explore/users?q=test&tab=",
+		"/explore/organizations",
+		"/explore/organizations?q=test&tab=",
+	}
+
+	for _, link := range links {
+		req := NewRequest(t, "GET", link)
+		resp := MakeRequest(t, req, http.StatusFound)
+		assert.EqualValues(t, "/user/login", test.RedirectURL(resp))
 	}
 }
 

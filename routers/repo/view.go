@@ -25,6 +25,7 @@ import (
 	"code.gitea.io/gitea/modules/markup"
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/templates"
+	"code.gitea.io/gitea/modules/yaml"
 	"github.com/Unknwon/paginater"
 )
 
@@ -203,9 +204,21 @@ func renderFile(ctx *context.Context, entry *git.TreeEntry, treeLink, rawLink st
 
 		readmeExist := markup.IsReadmeFile(blob.Name())
 		ctx.Data["ReadmeExist"] = readmeExist
+		isTocYaml := blob.Name() == "toc.yaml"
+		ctx.Data["IsTocYaml"] = isTocYaml
 		if markup.Type(blob.Name()) != "" {
 			ctx.Data["IsMarkup"] = true
 			ctx.Data["FileContent"] = string(markup.Render(blob.Name(), buf, path.Dir(treeLink), ctx.Repo.Repository.ComposeMetas()))
+		} else if isTocYaml {
+			ctx.Data["IsRenderedHTML"] = true
+			if rendered, err := yaml.Render(buf); err != nil {
+				log.Error(4, "RenderYaml: %v", err)
+				ctx.Flash.ErrorMsg = fmt.Sprintf("Unable to parse %v", err)
+				ctx.Data["Flash"] = ctx.Flash
+				ctx.Data["FileContent"] = string(buf)
+			} else {
+				ctx.Data["FileContent"] = string(rendered)
+			}
 		} else if readmeExist {
 			ctx.Data["IsRenderedHTML"] = true
 			ctx.Data["FileContent"] = string(bytes.Replace(buf, []byte("\n"), []byte(`<br>`), -1))
