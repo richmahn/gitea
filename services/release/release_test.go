@@ -185,7 +185,6 @@ func TestRelease_Update(t *testing.T) {
 	release, err = models.GetRelease(repo.ID, "v1.3.1")
 	assert.NoError(t, err)
 	releaseCreatedUnix = release.CreatedUnix
-	time.Sleep(time.Second) // sleep 1 second to ensure a different timestamp
 	release.Title = "Changed title"
 	release.Note = "Changed note"
 	assert.NoError(t, UpdateRelease(user, gitRepo, release, nil))
