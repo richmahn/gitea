@@ -261,7 +261,7 @@ func TestRelease_createTag(t *testing.T) {
 	releaseDraft2 := &models.Release{
 		RepoID:       repo.ID,
 		PublisherID:  user.ID,
-		TagName:      "v2.3.1",
+		TagName:      "v2.4.1",
 		Target:       "65f1bf2",
 		Title:        "v2.4.1 is another draft",
 		Note:         "v2.4.1 is another draft",
