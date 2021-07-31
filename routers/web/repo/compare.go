@@ -89,7 +89,7 @@ func setImageCompareContext(ctx *context.Context) {
 func setCsvCompareContext(ctx *context.Context) {
 	ctx.Data["IsCsvFile"] = func(diffFile *gitdiff.DiffFile) bool {
 		extension := strings.ToLower(filepath.Ext(diffFile.Name))
-		return extension == ".csv" || extension == ".tsv"
+		return extension == ".csv" || extension == ".tsv" || extension == ".psv"
 	}
 
 	type CsvDiffResult struct {
@@ -120,7 +120,7 @@ func setCsvCompareContext(ctx *context.Context) {
 			}
 			defer reader.Close()
 
-			return csv_module.CreateReaderAndGuessDelimiter(charset.ToUTF8WithFallbackReader(reader))
+			return csv_module.CreateReaderAndGuessDelimiter(charset.ToUTF8WithFallbackReader(reader), diffFile.Name)
 		}
 
 		baseReader, err := csvReaderFromCommit(baseCommit)

@@ -36,7 +36,7 @@ func (Renderer) NeedPostProcess() bool { return false }
 
 // Extensions implements markup.Renderer
 func (Renderer) Extensions() []string {
-	return []string{".csv", ".tsv"}
+	return []string{".csv", ".tsv", ".psv"}
 }
 
 // SanitizerRules implements markup.Renderer
@@ -103,7 +103,7 @@ func (Renderer) Render(ctx *markup.RenderContext, input io.Reader, output io.Wri
 		return err
 	}
 
-	rd, err := csv.CreateReaderAndGuessDelimiter(bytes.NewReader(rawBytes))
+	rd, err := csv.CreateReaderAndGuessDelimiter(bytes.NewReader(rawBytes), ctx.Filename)
 	if err != nil {
 		return err
 	}

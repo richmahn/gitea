@@ -20,7 +20,7 @@ func TestCreateReader(t *testing.T) {
 func TestCreateReaderAndGuessDelimiter(t *testing.T) {
 	input := "a;b;c\n1;2;3\n4;5;6"
 
-	rd, err := CreateReaderAndGuessDelimiter(strings.NewReader(input))
+	rd, err := CreateReaderAndGuessDelimiter(strings.NewReader(input), "a.csv")
 	assert.NoError(t, err)
 	assert.Equal(t, ';', rd.Comma)
 }

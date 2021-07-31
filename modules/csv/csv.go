@@ -10,11 +10,13 @@ import (
 	stdcsv "encoding/csv"
 	"errors"
 	"io"
+	"path/filepath"
 	"regexp"
 	"strings"
 
 	"code.gitea.io/gitea/modules/translation"
 	"code.gitea.io/gitea/modules/util"
+	"github.com/csimplestring/go-csv/detector"
 )
 
 var quoteRegexp = regexp.MustCompile(`["'][\s\S]+?["']`)
@@ -23,19 +25,31 @@ var quoteRegexp = regexp.MustCompile(`["'][\s\S]+?["']`)
 func CreateReader(input io.Reader, delimiter rune) *stdcsv.Reader {
 	rd := stdcsv.NewReader(input)
 	rd.Comma = delimiter
-	rd.TrimLeadingSpace = true
+	// \t's get trimmed as a space, true if delimiter not \t
+	rd.TrimLeadingSpace = (delimiter != '\t')
 	return rd
 }
 
 // CreateReaderAndGuessDelimiter tries to guess the field delimiter from the content and creates a csv.Reader.
-func CreateReaderAndGuessDelimiter(rd io.Reader) (*stdcsv.Reader, error) {
+func CreateReaderAndGuessDelimiter(rd io.Reader, filename string) (*stdcsv.Reader, error) {
 	var data = make([]byte, 1e4)
 	size, err := rd.Read(data)
 	if err != nil {
 		return nil, err
 	}
 
-	delimiter := guessDelimiter(data[:size])
+	var delimiter rune
+	if filename != "" {
+		extension := strings.ToLower(filepath.Ext(filename))
+		if extension == "tsv" {
+			delimiter = '\t'
+		} else if extension == "psd" {
+			delimiter = '|'
+		}
+	}
+	if delimiter == 0 {
+		delimiter = guessDelimiter(data[:size])
+	}
 
 	var newInput io.Reader
 	if size < 1e4 {
@@ -52,11 +66,19 @@ func CreateReaderAndGuessDelimiter(rd io.Reader) (*stdcsv.Reader, error) {
 func guessDelimiter(data []byte) rune {
 	maxLines := 10
 	maxBytes := util.Min(len(data), 1e4)
+
+	// First try with delimiter detector module
+	reader := bytes.NewReader(data[:maxBytes])
+	detector := detector.New()
+	if detected := detector.DetectDelimiter(reader, '"'); len(detected) > 0 {
+		return rune(detected[0][0])
+	}
+
+	// No delimiter found so try with our own scoring by delimiter character count
 	text := string(data[:maxBytes])
 	text = quoteRegexp.ReplaceAllLiteralString(text, "")
 	lines := strings.SplitN(text, "\n", maxLines+1)
 	lines = lines[:util.Min(maxLines, len(lines))]
-
 	delimiters := []rune{',', ';', '\t', '|', '@'}
 	bestDelim := delimiters[0]
 	bestScore := 0.0
