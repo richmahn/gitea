@@ -48,7 +48,7 @@ func CreateReaderAndGuessDelimiter(rd io.Reader, filename string) (*stdcsv.Reade
 		}
 	}
 	if delimiter == 0 {
-		delimiter = guessDelimiter(data[:size])
+		delimiter = detectOrGuessDelimiter(data[:size])
 	}
 
 	var newInput io.Reader
@@ -61,24 +61,32 @@ func CreateReaderAndGuessDelimiter(rd io.Reader, filename string) (*stdcsv.Reade
 	return CreateReader(newInput, delimiter), nil
 }
 
+func detectOrGuessDelimiter(data []byte) rune {
+	if delimiter := detectDelimiter(data); delimiter != 0 {
+		return delimiter
+	}
+	return guessDelimiter(data)
+}
+
+func detectDelimiter(data []byte) rune {
+	// First try with delimiter detector module
+	detector := detector.New()
+	if delimiters := detector.DetectDelimiter(bytes.NewReader(data), '"'); len(delimiters) > 0 {
+		return rune(delimiters[0][0]) // return first delimiter of the list as a rune
+	}
+	return 0
+}
+
 // guessDelimiter scores the input CSV data against delimiters, and returns the best match.
 // Reads at most 10k bytes & 10 lines.
 func guessDelimiter(data []byte) rune {
 	maxLines := 10
 	maxBytes := util.Min(len(data), 1e4)
-
-	// First try with delimiter detector module
-	reader := bytes.NewReader(data[:maxBytes])
-	detector := detector.New()
-	if detected := detector.DetectDelimiter(reader, '"'); len(detected) > 0 {
-		return rune(detected[0][0])
-	}
-
-	// No delimiter found so try with our own scoring by delimiter character count
 	text := string(data[:maxBytes])
 	text = quoteRegexp.ReplaceAllLiteralString(text, "")
 	lines := strings.SplitN(text, "\n", maxLines+1)
 	lines = lines[:util.Min(maxLines, len(lines))]
+
 	delimiters := []rune{',', ';', '\t', '|', '@'}
 	bestDelim := delimiters[0]
 	bestScore := 0.0
