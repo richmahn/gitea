@@ -48,7 +48,9 @@ func CreateReaderAndGuessDelimiter(rd io.Reader, filename string) (*stdcsv.Reade
 		}
 	}
 	if delimiter == 0 {
-		delimiter = detectOrGuessDelimiter(data[:size])
+		if delimiter = detectDelimiter(data); delimiter == 0 {
+			delimiter = guessDelimiter(data)
+		}
 	}
 
 	var newInput io.Reader
@@ -59,13 +61,6 @@ func CreateReaderAndGuessDelimiter(rd io.Reader, filename string) (*stdcsv.Reade
 	}
 
 	return CreateReader(newInput, delimiter), nil
-}
-
-func detectOrGuessDelimiter(data []byte) rune {
-	if delimiter := detectDelimiter(data); delimiter != 0 {
-		return delimiter
-	}
-	return guessDelimiter(data)
 }
 
 func detectDelimiter(data []byte) rune {
